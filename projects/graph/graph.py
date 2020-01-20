@@ -13,33 +13,71 @@ class Graph:
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        self.vertices[vertex_id] = set()
 
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v1].add(v2)
+        elif v1 not in self.vertices:
+            self.add_vertex(v1)
+            if v1 in self.vertices and v2 in self.vertices:
+                self.vertices[v1].add(v2)
+        elif v2 not in self.vertices:
+            self.add_vertex(v2)
+            if v1 in self.vertices and v2 in self.vertices:
+                self.vertices[v1].add(v2)
+
 
     def get_neighbors(self, vertex_id):
         """
         Get all neighbors (edges) of a vertex.
         """
-        pass  # TODO
+        if self.vertices[vertex_id]:
+            return self.vertices[vertex_id]
+        else:
+            return None
 
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        # Create a queue
+        q = Queue()
+        # Create a set to keep track of visited nodes
+        visited = set()
+        # Add the starting node to the queue
+        q.enqueue(starting_vertex)
+        # While there are nodes in the queue
+        while q.size() > 0:
+            # Dequeue them and if not visited, add them to visited and print them
+            v = q.dequeue()
+            if v not in visited:
+                visited.add(v)
+                print(v)
+                # Repeat for the next nodes
+                for next_v in self.vertices[v]:
+                    q.enqueue(next_v)
 
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        # Same concept as BFT but using a stack instead of a queue
+        s = Stack()
+        visited = set()
+        s.push(starting_vertex)
+        while s.size() > 0:
+            v = s.pop()
+            if v not in visited:
+                visited.add(v)
+                print(v)
+                for next_v in self.vertices[v]:
+                    s.push(next_v)
 
     def dft_recursive(self, starting_vertex):
         """
