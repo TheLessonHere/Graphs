@@ -164,22 +164,39 @@ class Graph:
 
         This should be done using recursion.
         """
+        # Create visited set and path list
         visited = set()
         path = []
+        # Start by appending the starting vert
         path.append(starting_vertex)
+        # The function will return multiple paths, to be stored in valid paths
+        valid_paths = []
 
         def dfs_recur(path, visited):
             v = path[-1]
+            # Check if we've reached our destination
             if v == destination_vertex:
-                return print(path)
+                # If so append this new path to valid paths and return
+                valid_paths.append(path)
+                return
+            # If not, add the vert to our visited set and continue the recursion for each neighboring node
             elif v not in visited:
                 visited.add(v)
                 for next_v in self.vertices[v]:
                     new_path = [*path]
                     new_path.append(next_v)
                     dfs_recur(new_path, visited)
+        # Call the function
+        dfs_recur(path, visited)
+        # Keep track of the shortest path
+        shortest_path = valid_paths[0]
+        # Loop over the valid paths to find the shortest one
+        for path in valid_paths:
+            if len(path) < len(shortest_path):
+                shortest_path = path
+        # Return it
+        return shortest_path
 
-        return dfs_recur(path, visited)
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
