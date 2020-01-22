@@ -1,3 +1,6 @@
+import random
+from util import Queue
+
 class User:
     def __init__(self, name):
         self.name = name
@@ -43,10 +46,27 @@ class SocialGraph:
         self.users = {}
         self.friendships = {}
         # !!!! IMPLEMENT ME
+        # Add the users to the db
+        for i in range(num_users):
+            self.add_user(F"User {i + 1}")
+        # Declare a list to hold all possible friendship combinations
+        possible_friends = []
+        # Find all possible friendships for each user
+        for user_id in self.users:
+            # This range avoids duplicate friendships by making sure the first id is
+            # smaller than the second id
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friends.append((user_id, friend_id))
+        # Shuffle the combos and select the first n friends to add where n is the avg number of friends
+        random.shuffle(possible_friends)
+        # Get the number of total number of friendships, and then divide by two since technically 2 are
+        # created by add_friendship
+        total_friendships = num_users * avg_friendships // 2
+        for i in range(total_friendships):
+            friendship = possible_friends[i]
+            self.add_friendship(friendship[0], friendship[1])
 
-        # Add users
 
-        # Create friendships
 
     def get_all_social_paths(self, user_id):
         """
@@ -59,6 +79,21 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        # Implement a BFT and store the paths as we go
+        # When an unvisited node is reached, add the path to the visited dictionary
+        q = Queue()
+        q.enqueue([user_id])
+        while q.size() > 0:
+            path = q.dequeue()
+            v = path[-1]
+            if v not in visited:
+                # We can do this here so that the path won't overwrite the short paths
+                # already in the visited dictionary
+                visited[v] = path
+                for f in self.friendships[v]:
+                    new_path = [*path]
+                    new_path.append(f)
+                    q.enqueue(new_path)
         return visited
 
 
